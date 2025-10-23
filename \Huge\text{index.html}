@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>King Ali Aljabri App</title>
+<meta name="theme-color" content="#1f2b6e" />
+<style>
+  :root{
+    --bg:#0f1a49; --card:#fff; --gold:#d6b120; --accent:#23388f; --muted:#6b6b6b;
+    --radius:12px;
+  }
+  html,body{height:100%;margin:0;font-family: "Segoe UI", Tahoma, "Noto Naskh Arabic", sans-serif;direction:rtl;background:linear-gradient(180deg,var(--bg),#071032);color:#fff}
+  .app{max-width:900px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+  .splash{padding:36px 18px;text-align:center}
+  .logo{width:120px;height:120px;margin:0 auto;border-radius:16px;background:linear-gradient(135deg,var(--gold),#ffd966);display:flex;align-items:center;justify-content:center;color:#081;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+  .logo h1{margin:0;font-size:20px;color:#081;text-shadow:0 1px 0 rgba(255,255,255,.3)}
+  .title{font-size:22px;margin-top:14px;color:var(--gold);font-weight:700}
+  .subtitle{margin-top:8px;color:#f1f1f1;opacity:.95}
+  .main{padding:14px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .card{background:var(--card);color:#0b1742;border-radius:var(--radius);padding:18px;box-shadow:0 6px 18px rgba(0,0,0,.35);text-align:center;cursor:pointer}
+  .card .icon{width:56px;height:56px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:22px}
+  .card h3{margin:0;font-size:16px}
+  .card p{margin:6px 0 0;color:var(--muted);font-size:13px}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px}
+  .btn{background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;border:none;cursor:pointer}
+  .btn.ghost{background:transparent;border:2px solid rgba(255,255,255,.08)}
+  .search{margin:10px 14px}
+  input[type="search"]{width:100%;padding:10px;border-radius:10px;border:0;outline:none}
+  footer{padding:18px;text-align:center;color:#ccc;font-size:13px}
+  .lang-toggle{background:#fff;color:#0b1742;padding:6px 10px;border-radius:8px;font-weight:600;cursor:pointer}
+  /* modal */
+  .modal-back{position:fixed;inset:0;background:rgba(3,3,10,.6);display:none;align-items:center;justify-content:center;z-index:50}
+  .modal{width:94%;max-width:520px;background:#fff;color:#0b1742;border-radius:12px;padding:18px}
+  .row{display:flex;gap:8px;align-items:center;justify-content:space-between}
+  .hidden{display:none}
+  /* responsive */
+  @media(min-width:720px){.grid{grid-template-columns:repeat(3,1fr)} .logo{width:140px;height:140px}}
+  a{color:var(--accent); text-decoration:none}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="splash" id="splash">
+    <div class="logo"><h1>KA</h1></div>
+    <div class="title" id="appName">King Ali Aljabri</div>
+    <div class="subtitle" id="tagline">تطبيق الكنج علي الجبري – مساعدك الدراسي</div>
+    <div style="margin-top:18px">
+      <button class="btn" onclick="enterApp()">ابدأ الآن</button>
+      <button class="btn ghost" onclick="openDevPrompt()">قسم المطور</button>
+    </div>
+    <div style="margin-top:8px">
+      <span class="lang-toggle" id="langToggle" onclick="toggleLang()">EN / عربي</span>
+    </div>
+  </div>
+
+  <div id="ui" class="hidden">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="btn ghost" onclick="goHome()">الرئيسية</button>
+        <div style="font-weight:700;color:var(--gold)" id="sectionTitle">قسم الطلاب</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="openContact()">تواصل</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="grid" id="studentsGrid">
+        <!-- cards injected by JS -->
+      </div>
+
+      <hr style="border:0;height:1px;background:rgba(255,255,255,.04);margin:18px 0">
+
+      <div style="font-weight:700;color:var(--gold);margin-bottom:10px">مثبتات سريعة</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn ghost" onclick="openSection( teachers )">قسم المعلمين</button>
+        <button class="btn ghost" onclick="openSection( smart )">التعليم الذكي</button>
+        <button class="btn ghost" onclick="openSection( books )">الكتب والروايات</button>
+        <button class="btn ghost" onclick="openSection( fun )">الترفيه</button>
+      </div>
+    </div>
+
+    <footer>
+      <div id="footerText">By King Ali Aljabri – Designed with Royal Vision 👑</div>
+    </footer>
+  </div>
+</div>
+
+<!-- contact modal -->
+<div class="modal-back" id="modalBack">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <strong>تواصل مع المطور</strong>
+      <button onclick="closeModal()" class="btn ghost">إغلاق</button>
+    </div>
+    <div style="margin-top:12px">
+      <p>واتساب: <a id="waLink" href="#" target="_blank">+967734574741</a></p>
+      <p>تيليجرام: <a id="tgLink" href="#" target="_blank">@BQQQQ3</a></p>
+      <p>إيميل: <span id="emailText">alloush1185@gmail.com</span></p>
+    </div>
+    <div style="margin-top:12px">
+      <button class="btn" onclick="copyContact()">انسخ التفاصيل</button>
+    </div>
+  </div>
+</div>
+
+<!-- developer modal -->
+<div class="modal-back" id="devModal">
+  <div class="modal">
+    <h3>Developer Zone</h3>
+    <p style="color:#666">أضف محتوى سريعًا أو نفّذ تحديثات (خاص بالمطور).</p>
+    <div style="margin-top:10px">
+      <label>كلمة سر للولوج:</label><br>
+      <input id="devPass" type="password" style="width:100%;padding:8px;border-radius:8px;border:1px solid #ddd" />
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button class="btn" onclick="devLogin()">دخول</button>
+        <button class="btn ghost" onclick="closeDevModal()">إغلاق</button>
+      </div>
+    </div>
+    <div id="devTools" class="hidden" style="margin-top:12px">
+      <label>أضف رابط PDF أو رابط خارجي (مثال: رابط كتاب)</label>
+      <input id="newLink" type="text" placeholder="https://..." style="width:100%;padding:8px;border-radius:8px;border:1px solid #ddd" />
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <input id="newTitle" type="text" placeholder="عنوان العنصر (مثال: كتاب الرياضيات)" style="flex:1;padding:8px;border-radius:8px;border:1px solid #ddd" />
+        <button class="btn" onclick="addDevItem()">أضف</button>
+      </div>
+      <div style="margin-top:12px">
+        <label>تحديث اسم التطبيق</label>
+        <input id="appNameEdit" type="text" style="width:100%;padding:8px;border-radius:8px;border:1px solid #ddd" placeholder="King Ali Aljabri" />
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button class="btn" onclick="saveAppName()">حفظ</button>
+          <button class="btn ghost" onclick="logoutDev()">خروج</button>
+        </div>
+      </div>
+      <hr>
+      <div style="margin-top:10px">
+        <label>قائمة العناصر المضافة مؤقتًا:</label>
+        <div id="devList" style="max-height:200px;overflow:auto;margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==== CONFIG & DATA ==== */
+const config = {
+  developerPassword:  alloush , // كلمة المرور التي طلبتها
+  contact: {
+    whatsapp:  +967734574741 ,
+    telegram:  BQQQQ3 ,
+    email:  alloush1185@gmail.com 
+  },
+  appName: {ar: King Ali Aljabri , en: King Ali Aljabri App },
+  tagline: {ar: تطبيق الكنج علي الجبري – مساعدك الدراسي , en: King Ali Aljabri – Your Study Assistant }
+};
+
+let lang =  ar ; // default
+
+const studentsItems = [
+  {id: translate , title:{ar: ترجمة فورية ,en: Instant Translate }, desc:{ar: ترجمة نصوص فورياً ,en: Translate texts }, icon: 🌐 , action:()=>openUrl( https://translate.google.com )},
+  {id: improve , title:{ar: تحسين الإنجليزية ,en: Improve English }, desc:{ar: تمارين يومية ,en: Daily practice }, icon: 📘 , action:()=>openUrl( https://www.duolingo.com )},
+  {id: qna , title:{ar: أسئلة وتمارين ,en: Questions & Exercises }, desc:{ar: اختبارات قصيرة ,en: Short quizzes }, icon: ❓ , action:()=>openSection( quiz )},
+  {id: books , title:{ar: الكتب والروايات ,en: Books & Novels }, desc:{ar: PDF ومصادر ,en: PDFs & Sources }, icon: 📚 , action:()=>openSection( books )},
+  {id: poems , title:{ar: أشعار ثقافية ,en: Cultural Poems }, desc:{ar: مقاطع شعرية مفيدة ,en: Short poems }, icon: 📝 , action:()=>openSection( poems )},
+  {id: fun , title:{ar: ركن الترفيه ,en: Fun Corner }, desc:{ar: نكت وألعاب ذهنية ,en: Jokes & brain games }, icon: 😄 , action:()=>openSection( fun )}
+];
+
+const teachersItems = [
+  {id: prep , title:{ar: تحضير الدرس ,en: Lesson Prep }, desc:{ar: نموذج تحضير ,en: Prep templates }, icon: 🧾 , action:()=>openSection( teacher_prep )},
+  {id: plan , title:{ar: خطة ومادة ,en: Plan & Subject }, desc:{ar: خطط أسبوعية ,en: Weekly plans }, icon: 📅 , action:()=>openSection( teacher_plan )},
+  {id: acts , title:{ar: أنشطة ,en: Activities }, desc:{ar: أنشطة جاهزة ,en: Ready activities }, icon: 🎯 , action:()=>openSection( teacher_acts )},
+  {id: hw , title:{ar: واجبات ,en: Homework }, desc:{ar: قوالب واجبات ,en: Homework templates }, icon: ✏️ , action:()=>openSection( teacher_hw )}
+];
+
+const smartItems = [
+  {id: review , title:{ar: مراجعة ,en: Review }, desc:{ar: مراجعات ذكية ,en: Smart reviews }, icon: 🔎 , action:()=>openSection( smart_review )},
+  {id: help , title:{ar: مساعدة ,en: Help }, desc:{ar: اسأل المدرس الذكي ,en: Ask the EduBot }, icon: 🤖 , action:()=>openSection( smart_help )},
+  {id: calc , title:{ar: حساب ,en: Calculator }, desc:{ar: آلة حاسبة علمية ,en: Scientific calculator }, icon: ➗ , action:()=>openSection( smart_calc )},
+  {id: summary , title:{ar: ملخص ,en: Summary }, desc:{ar: ملخصات ذكية ,en: Auto summaries }, icon: 📌 , action:()=>openSection( smart_summary )}
+];
+
+let devAdded = []; // store dev-added items temporarily
+
+/* ==== UI & BOOT ==== */
+document.getElementById( waLink ).href =  https://wa.me/  + config.contact.whatsapp.replace(/\+/g,  );
+document.getElementById( tgLink ).href =  https://t.me/  + config.contact.telegram;
+document.getElementById( emailText ).innerText = config.contact.email;
+document.getElementById( appName ).innerText = config.appName.ar;
+document.getElementById( tagline ).innerText = config.tagline.ar;
+document.getElementById( sectionTitle ).innerText =  قسم الطلاب ;
+
+function enterApp(){
+  document.getElementById( splash ).style.display= none ;
+  document.getElementById( ui ).classList.remove( hidden );
+  renderStudents();
+}
+
+function goHome(){
+  document.getElementById( ui ).classList.remove( hidden );
+  renderStudents();
+  document.getElementById( sectionTitle ).innerText = (lang=== ar ) ?  قسم الطلاب  :  Students ;
+}
+
+function toggleLang(){
+  lang = (lang=== ar )? en : ar ;
+  document.getElementById( appName ).innerText = config.appName[lang];
+  document.getElementById( tagline ).innerText = config.tagline[lang];
+  renderStudents();
+}
+
+function openUrl(url){ window.open(url, _blank ); }
+
+function openContact(){
+  document.getElementById( modalBack ).style.display= flex ;
+}
+function closeModal(){ document.getElementById( modalBack ).style.display= none ; }
+
+/* render grids */
+function renderStudents(){
+  const grid = document.getElementById( studentsGrid );
+  grid.innerHTML=  ;
+  const arr = studentsItems.concat(devAdded);
+  arr.forEach(it=>{
+    const el = document.createElement( div );
+    el.className= card ;
+    el.innerHTML = `<div class="icon" style="background:linear-gradient(135deg,#eef,#dde);font-size:26px">${it.icon ||  📄 }</div>
+                    <h3>${it.title[lang] || it.title}</h3><p>${it.desc[lang] ||   }</p>`;
+    el.onclick = it.action || (()=>openUrl(it.url ||  # ));
+    grid.appendChild(el);
+  });
+}
+
+/* open different sections as simple pages */
+function openSection(name){
+  document.getElementById( sectionTitle ).innerText = (lang=== ar ) ? sectionTitleArabic(name) : sectionTitleEnglish(name);
+  if(name=== books ){
+    showSimplePage(`<h2>${(lang=== ar )? الكتب والروايات : Books & Novels }</h2>
+      <p>${(lang=== ar )? روابط وتحميل PDF من مصادر موثوقة:  :  PDF links from trusted sources: }</p>
+      <ul>
+        <li><a href="https://archive.org/details/texts" target="_blank">Internet Archive - مكتبة</a></li>
+        <li><a href="https://www.gutenberg.org/" target="_blank">Project Gutenberg - كتب مجانية</a></li>
+        <li><a href="https://books.google.com/" target="_blank">Google Books</a></li>
+      </ul>
+      <p>${(lang=== ar )? يمكن للمطور إضافة روابط ملفات PDF خاصة عبر لوحة المطور.  :  Developer can add private PDF links via Developer Zone. }</p>`);
+    return;
+  }
+  if(name=== fun ){
+    showSimplePage(`<h2>${(lang=== ar )? ركن الترفيه : Fun Corner }</h2>
+      <p>${(lang=== ar )? نكت ومعلومات ممتعة:  :  Jokes & fun facts: }</p>
+      <ul>
+        <li>${(lang=== ar )? نكتة: المدرس قال.. (مثال)  :  Joke: The teacher said... (example) }</li>
+        <li>${(lang=== ar )? تحدي ذهني: ما هو الشيء الذي ...؟  :  Brain teaser: What is the thing that...? }</li>
+      </ul>`);
+    return;
+  }
+  if(name=== quiz ){
+    showSimplePage(`<h2>${(lang=== ar )? أسئلة وتمارين : Questions & Exercises }</h2><p>${(lang=== ar )? قريباً: اختبارات قصيرة وممتعة.  :  Coming soon: short and fun quizzes. }</p>`);
+    return;
+  }
+  if(name.startsWith( teacher )){
+    showSimplePage(`<h2>${(lang=== ar )? قسم المعلمين : Teachers Section }</h2><p>${(lang=== ar )? تحضير، خطط، أنشطة، واجبات.  :  Prep, plans, activities, homework. }</p>`);
+    return;
+  }
+  if(name.startsWith( smart )){
+    showSimplePage(`<h2>${(lang=== ar )? التعليم الذكي : Smart Education }</h2><p>${(lang=== ar )? مدرس ذكي (EduBot) ومكونات ذكية أخرى.  :  EduBot and smart components. }</p>`);
+    return;
+  }
+  showSimplePage(`<h2>${(lang=== ar )? قسم  :  Section }</h2><p>${(lang=== ar )? المحتوى قيد الإعداد  :  Content is being prepared. }</p>`);
+}
+
+function sectionTitleArabic(key){
+  if(key=== books ) return  الكتب والروايات ;
+  if(key=== fun ) return  الترفيه ;
+  if(key=== teachers ) return  قسم المعلمين ;
+  if(key=== smart ) return  التعليم الذكي ;
+  return  القسم ;
+}
+function sectionTitleEnglish(key){
+  if(key=== books ) return  Books & Novels ;
+  if(key=== fun ) return  Fun Corner ;
+  if(key=== teachers ) return  Teachers ;
+  if(key=== smart ) return  Smart Education ;
+  return  Section ;
+}
+
+/* show simple full-screen page */
+function showSimplePage(html){
+  const modal = document.createElement( div );
+  modal.style.position= fixed ;modal.style.inset=0;modal.style.background= linear-gradient(180deg,rgba(7,10,40,.98),rgba(7,10,40,.98)) ;modal.style.color= #fff ;modal.style.zIndex=60;padding:20px;overflow:auto;
+  modal.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div></div><button class="btn" onclick="this.closest( div[style] ).remove()">إغلاق</button></div><div style="margin-top:14px">${html}</div>`;
+  document.body.appendChild(modal);
+}
+
+/* ===== developer zone ===== */
+function openDevPrompt(){ document.getElementById( devModal ).style.display= flex ; }
+function closeDevModal(){ document.getElementById( devModal ).style.display= none ; document.getElementById( devPass ).value=  ; document.getElementById( devTools ).classList.add( hidden ); updateDevList(); }
+
+function devLogin(){
+  const p = document.getElementById( devPass ).value;
+  if(p===config.developerPassword){
+    document.getElementById( devTools ).classList.remove( hidden );
+    document.getElementById( appNameEdit ).value = config.appName[lang];
+    updateDevList();
+  } else {
+    alert(lang=== ar ? كلمة السر خاطئة : Wrong password );
+  }
+}
+function logoutDev(){ closeDevModal(); alert( Developer signed out ); }
+
+function addDevItem(){
+  const url = document.getElementById( newLink ).value.trim();
+  const title = document.getElementById( newTitle ).value.trim();
+  if(!url || !title){ alert(lang=== ar ? ادخل العنوان والرابط : Enter title and link ); return; }
+  const item = { id:  dev_ +Date.now(), title: {ar:title, en:title}, desc:{ar: محتوى مضاف من المطور , en: Developer added content }, icon: 📄 , action:()=>openUrl(url), url:url };
+  devAdded.push(item);
+  document.getElementById( newLink ).value=  ; document.getElementById( newTitle ).value=  ;
+  updateDevList();
+  renderStudents();
+  alert(lang=== ar ? تمت الإضافة : Added );
+}
+
+function updateDevList(){
+  const dv = document.getElementById( devList );
+  dv.innerHTML=  ;
+  if(devAdded.length===0){ dv.innerHTML =  <small style="color:#666"> +(lang=== ar ? لا توجد عناصر مضافة : No items added )+ </small> ; return; }
+  devAdded.forEach(it=>{
+    const d = document.createElement( div );
+    d.style.padding= 8px ; d.style.borderBottom= 1px solid #eee ;
+    d.innerHTML = `<strong>${it.title.ar}</strong><div style="font-size:12px;color:#444">${it.url ||   }</div><div style="margin-top:6px"><button class="btn" onclick="removeDevItem( ${it.id} )">حذف</button></div>`;
+    dv.appendChild(d);
+  });
+}
+
+function removeDevItem(id){
+  devAdded = devAdded.filter(i=>i.id!==id);
+  updateDevList();
+  renderStudents();
+}
+
+/* update app name */
+function saveAppName(){
+  const v = document.getElementById( appNameEdit ).value.trim();
+  if(!v) return;
+  config.appName.ar = v; config.appName.en = v;
+  document.getElementById( appName ).innerText = v;
+  alert(lang=== ar ? تم تحديث اسم التطبيق : App name updated );
+}
+
+/* copy contact */
+function copyContact(){
+  const text = `WhatsApp: ${config.contact.whatsapp}\nTelegram: ${config.contact.telegram}\nEmail: ${config.contact.email}`;
+  navigator.clipboard.writeText(text).then(()=>alert(lang=== ar ? تم النسخ : Copied ));
+}
+
+/* dev login quick open */
+function openDevZoneQuick(){
+  const p = prompt( Enter developer password: );
+  if(p===config.developerPassword) openDevPrompt();
+}
+
+/* PWA install prompt (optional) */
+window.addEventListener( load , ()=> {
+  // nothing auto - wait user
+});
+
+/* utility: open modal close */
+function closeModal(){ document.getElementById( modalBack ).style.display= none ; }
+
+</script>
+</body>
+</html>
