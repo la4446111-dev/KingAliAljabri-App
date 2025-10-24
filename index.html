@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>الفخــ....❦ـم  𖤍DARiUS𖤍</title>
+<meta name="theme-color" content="#0f1a49"/>
+<style>
+  :root{
+    --bg-dark:#071033;
+    --bg-mid:#0f1a49;
+    --card:#fff;
+    --gold:#d6b120;
+    --accent:#23388f;
+    --muted:#6b6b6b;
+    --text-dark:#08102a;
+    --radius:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:"Noto Naskh Arabic", "Segoe UI", Tahoma, sans-serif;direction:rtl;background:linear-gradient(180deg,var(--bg-mid),var(--bg-dark));color:#fff}
+  .app{max-width:980px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+  .splash{padding:36px 18px;text-align:center}
+  .logo{width:130px;height:130px;margin:0 auto;border-radius:16px;background:linear-gradient(135deg,var(--gold),#ffd966);display:flex;align-items:center;justify-content:center;color:var(--text-dark);box-shadow:0 10px 30px rgba(0,0,0,.45)}
+  .logo h1{margin:0;font-size:26px;color:var(--text-dark);letter-spacing:1px}
+  .title{font-size:20px;margin-top:14px;color:var(--gold);font-weight:800;line-height:1.1}
+  .subtitle{margin-top:8px;color:#f7f7f7;opacity:.95}
+  .main{padding:14px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .card{background:var(--card);color:var(--text-dark);border-radius:var(--radius);padding:16px;box-shadow:0 8px 20px rgba(0,0,0,.35);text-align:center;cursor:pointer}
+  .card .icon{width:56px;height:56px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:24px}
+  .card h3{margin:0;font-size:16px}
+  .card p{margin:6px 0 0;color:var(--muted);font-size:13px}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px}
+  .btn{background:var(--accent);color:#fff;padding:10px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+  .btn.ghost{background:transparent;border:2px solid rgba(255,255,255,.08)}
+  .lang-toggle{background:#fff;color:var(--text-dark);padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer}
+  .controls{display:flex;gap:10px;align-items:center}
+  input,select,textarea{width:100%;padding:10px;border-radius:8px;border:0;background:#f5f5f5;color:var(--text-dark)}
+  .modal-back{position:fixed;inset:0;background:rgba(2,6,22,.6);display:none;align-items:center;justify-content:center;z-index:60;padding:20px}
+  .modal{width:100%;max-width:720px;background:var(--card);color:var(--text-dark);border-radius:12px;padding:18px;box-shadow:0 12px 40px rgba(0,0,0,.6);max-height:90vh;overflow:auto}
+  .hidden{display:none}
+  footer{padding:18px;text-align:center;color:#ddd;font-size:13px}
+  .row{display:flex;gap:8px;align-items:center}
+  .small{font-size:13px;color:var(--muted)}
+  .theme-toggle{background:transparent;border:2px solid rgba(255,255,255,.12);color:#fff;padding:6px 10px;border-radius:8px;cursor:pointer}
+  .rating-stars{font-size:20px;cursor:pointer}
+  .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(0,0,0,.06);color:var(--text-dark);font-weight:700}
+  @media(min-width:760px){.grid{grid-template-columns:repeat(3,1fr)} .logo{width:150px;height:150px}}
+  a{color:var(--accent);text-decoration:none}
+  .link-box{background:linear-gradient(90deg,#fff,#fff);padding:10px;border-radius:8px}
+  .light-theme{ --bg-dark:#f4f6fb; --bg-mid:#eef3ff; --card:#fff; --accent:#0b3b91; --text-dark:#0b1742; color:#0b1742 }
+  .light-theme body{color:var(--text-dark)}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="splash" id="splash">
+    <div class="logo"><h1>📘</h1></div>
+    <div class="title" id="appName">الفخــ....❦ـم  𖤍DARiUS𖤍</div>
+    <div class="subtitle" id="tagline">مرحبًا بك في عالم التفوق والإبداع</div>
+    <div style="margin-top:18px">
+      <button class="btn" onclick="showModal( auth )">ابدأ الآن</button>
+      <button class="btn ghost" onclick="showModal( dev )">قسم المطور</button>
+    </div>
+    <div style="margin-top:10px">
+      <span class="lang-toggle" id="langToggle" onclick="toggleLang()">EN / عربي</span>
+      <button class="theme-toggle" onclick="toggleTheme()" style="margin-left:10px">ثيم</button>
+    </div>
+    <div style="margin-top:12px;color:#e9e9e9;font-size:13px">Powered by King Ali Aljabri</div>
+  </div>
+
+  <div id="ui" class="hidden">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="btn ghost" onclick="goHome()">الرئيسية</button>
+        <div style="font-weight:800;color:var(--gold)" id="sectionTitle">قسم الطلاب</div>
+      </div>
+      <div class="controls">
+        <div class="small" id="userBadge"></div>
+        <button class="btn" onclick="openContact()">تواصل</button>
+        <button class="btn ghost" id="logoutBtn" onclick="logout()">تسجيل خروج</button>
+      </div>
+    </div>
+
+    <div class="main" id="mainContent">
+      <div class="grid" id="studentsGrid"></div>
+
+      <hr style="border:0;height:1px;background:rgba(255,255,255,.06);margin:18px 0">
+
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-weight:800;color:var(--gold);margin-bottom:10px" id="quickTitle">مثبتات سريعة</div>
+        <div class="row">
+          <div class="small">تقييم التطبيق:</div>
+          <div id="rating" class="rating-stars">★★★★★</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+        <button class="btn ghost" onclick="openSection( teachers )">قسم المعلمين</button>
+        <button class="btn ghost" onclick="openSection( smart )">التعليم الذكي</button>
+        <button class="btn ghost" onclick="openSection( books )">الكتب والروايات</button>
+        <button class="btn ghost" onclick="openSection( fun )">الترفيه</button>
+      </div>
+
+    </div>
+
+    <footer>
+      <div id="footerText">By King Ali Aljabri – Designed with Royal Vision 👑</div>
+    </footer>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-back" id="modal-auth">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <strong id="authTitle">تسجيل الدخول / إنشاء حساب</strong>
+      <button class="btn ghost" onclick="closeModal( auth )">إغلاق</button>
+    </div>
+
+    <div id="authForms" style="margin-top:12px">
+      <div id="loginForm">
+        <input id="loginEmail" placeholder="البريد الإلكتروني" type="email" />
+        <input id="loginPass" placeholder="كلمة المرور" type="password" style="margin-top:8px"/>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn" onclick="login()">تسجيل الدخول</button>
+          <button class="btn ghost" onclick="showRegister()">انشاء حساب</button>
+        </div>
+      </div>
+
+      <div id="registerForm" class="hidden">
+        <input id="regName" placeholder="الاسم (مثال: علي)" style="margin-top:8px"/>
+        <input id="regEmail" placeholder="البريد الإلكتروني" type="email" style="margin-top:8px"/>
+        <input id="regPass" placeholder="كلمة المرور (6 أحرف على الأقل)" type="password" style="margin-top:8px"/>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn" onclick="register()">إنشاء الحساب</button>
+          <button class="btn ghost" onclick="showLogin()">رجوع</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="modal-back" id="modal-contact">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <strong>تواصل مع المطور</strong>
+      <button class="btn ghost" onclick="closeModal( contact )">إغلاق</button>
+    </div>
+    <div style="margin-top:12px">
+      <p>واتساب: <a id="waLink" href="https://wa.me/967734574741" target="_blank">+967734574741</a></p>
+      <p>تيليجرام: <a id="tgLink" href="https://t.me/BQQQQ3" target="_blank">@BQQQQ3</a></p>
+      <p>البريد: <span id="emailText">alloush1185@gmail.com</span></p>
+      <div style="margin-top:12px">
+        <button class="btn" onclick="copyContact()">انسخ التفاصيل</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DEV MODAL -->
+<div class="modal-back" id="modal-dev">
+  <div class="modal">
+    <h3>Developer Zone (سري)</h3>
+    <p class="small">أدخل كلمة المرور (خاص بالمطور).</p>
+    <input id="devPass" placeholder="كلمة مرور المطور"/>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn" onclick="devLogin()">دخول</button>
+      <button class="btn ghost" onclick="closeModal( dev )">إغلاق</button>
+    </div>
+
+    <div id="devTools" class="hidden" style="margin-top:12px">
+      <label>أضف رابط كتاب/مقال (مثال PDF)</label>
+      <input id="newTitle" placeholder="عنوان العنصر" style="margin-top:8px"/>
+      <input id="newLink" placeholder="https://..." style="margin-top:8px"/>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn" onclick="addDevItem()">أضف</button>
+        <button class="btn ghost" onclick="logoutDev()">خروج</button>
+      </div>
+      <hr style="margin-top:12px"/>
+      <div>
+        <label class="small">عناصر مطور مضافة مؤقتًا:</label>
+        <div id="devList" style="max-height:200px;overflow:auto;margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIMPLE PAGE PLACEHOLDER -->
+<div class="modal-back" id="modal-page">
+  <div class="modal" id="pageContent">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <strong id="pageTitle">عنوان</strong>
+      <button class="btn ghost" onclick="closeModal( page )">إغلاق</button>
+    </div>
+    <div id="pageBody" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<script>
+/* CONFIG */
+const DEV_PASS =  alloush ;
+const LINKS = {
+  archive:  https://archive.org/details/texts ,
+  gutenberg:  https://www.gutenberg.org/ ,
+  googlebooks:  https://books.google.com/ ,
+  gutenberg_ar:  https://www.gutenberg.org/browse/languages/ar 
+};
+
+/* UTIL */
+function $(id){return document.getElementById(id)}
+function showModal(name){ $( modal- +name).style.display= flex  }
+function closeModal(name){ $( modal- +name).style.display= none  }
+function toggleLang(){ window.lang = (window.lang=== en )?  ar : en ; renderAll(); }
+function toggleTheme(){ document.documentElement.classList.toggle( light-theme ) }
+function copyContact(){ navigator.clipboard.writeText( WhatsApp: +967734574741\\nTelegram: @BQQQQ3\\nEmail: alloush1185@gmail.com ).then(()=>alertMsg( تم نسخ معلومات التواصل )) }
+
+/* AUTH - localStorage */
+function usersKey(){ return  ka_users_v1  }
+function currentKey(){ return  ka_current_v1  }
+function loadUsers(){ try{ return JSON.parse(localStorage.getItem(usersKey())) || {} }catch(e){return {}} }
+function saveUsers(u){ localStorage.setItem(usersKey(), JSON.stringify(u)) }
+function setCurrent(email){ localStorage.setItem(currentKey(), email) }
+function getCurrent(){ return localStorage.getItem(currentKey()) }
+function logout(){ localStorage.removeItem(currentKey()); renderAll(); showLoginModal(); }
+
+/* Alerts */
+function alertMsg(t){ alert(t) }
+
+/* AUTH UI */
+function showLoginModal(){ showModal( auth ); $( loginForm ).classList.remove( hidden ); $( registerForm ).classList.add( hidden ); $( authTitle ).innerText= تسجيل الدخول / إنشاء حساب  }
+function showRegister(){ $( loginForm ).classList.add( hidden ); $( registerForm ).classList.remove( hidden ); $( authTitle ).innerText= إنشاء حساب جديد  }
+function showLogin(){ $( loginForm ).classList.remove( hidden ); $( registerForm ).classList.add( hidden ); $( authTitle ).innerText= تسجيل الدخول / إنشاء حساب  }
+
+function register(){
+  const name = $( regName ).value.trim();
+  const email = $( regEmail ).value.trim().toLowerCase();
+  const pass = $( regPass ).value;
+  if(!name || !email || !pass){ alertMsg( أكمل البيانات ); return }
+  if(pass.length<6){ alertMsg( كلمة المرور 6 أحرف على الأقل ); return }
+  const users = loadUsers();
+  if(users[email]){ alertMsg( هذا البريد مسجل سابقًا ); return }
+  users[email] = {name, email, pass, points:0, rating:0};
+  saveUsers(users);
+  setCurrent(email);
+  closeModal( auth );
+  renderAll();
+  alertMsg( تم إنشاء الحساب بنجاح );
+}
+
+function login(){
+  const email = $( loginEmail ).value.trim().toLowerCase();
+  const pass = $( loginPass ).value;
+  if(!email || !pass){ alertMsg( أدخل البريد والكلمة ); return }
+  const users = loadUsers();
+  if(users[email] && users[email].pass === pass){
+    setCurrent(email);
+    closeModal( auth );
+    renderAll();
+    alertMsg( تم تسجيل الدخول );
+  } else alertMsg( بيانات خاطئة );
+}
+
+/* RENDER */
+window.lang =  ar ;
+let devAdded = JSON.parse(localStorage.getItem( ka_dev_added_v1 )|| [] );
+
+function currentUserObj(){
+  const cur = getCurrent(); if(!cur) return null;
+  const users = loadUsers(); return users[cur] || null;
+}
+
+function renderAll(){
+  const u = currentUserObj();
+  if(u){
+    $( userBadge ).innerHTML = `<span class="badge">${u.name}</span>`;
+    $( logoutBtn ).style.display= inline-block ;
+  } else { $( userBadge ).innerHTML=  ; $( logoutBtn ).style.display= none  }
+  renderStudents();
+  renderRating();
+}
+
+const studentsItems = [
+  {id: translate , title:{ar: ترجمة فورية ,en: Instant Translate }, desc:{ar: ترجمة نصوص فوراً ,en: Translate texts }, icon: 🌐 , url: https://translate.google.com },
+  {id: improve , title:{ar: تحسين الإنجليزية ,en: Improve English }, desc:{ar: تمارين يومية ,en: Daily practice }, icon: 📘 , url: https://www.duolingo.com },
+  {id: qna , title:{ar: أسئلة وتمارين ,en: Questions & Exercises }, desc:{ar: اختبارات قصيرة ,en: Short quizzes }, icon: ❓ },
+  {id: books , title:{ar: الكتب والروايات ,en: Books & Novels }, desc:{ar: PDF ومصادر موثوقة ,en: PDFs & Sources }, icon: 📚 },
+  {id: poems , title:{ar: أشعار ثقافية ,en: Cultural Poems }, desc:{ar: مقاطع شعرية قصيرة ,en: Short poems }, icon: 📝 },
+  {id: fun , title:{ar: ركن الترفيه ,en: Fun Corner }, desc:{ar: نكت وألعاب ذهنية ,en: Jokes & brain games }, icon: 😄 }
+];
+
+function renderStudents(){
+  const grid = $( studentsGrid ); grid.innerHTML=  ;
+  const arr = studentsItems.concat(devAdded);
+  arr.forEach(it=>{
+    const el = document.createElement( div ); el.className= card ;
+    const title = (typeof it.title=== string )? it.title : it.title[window.lang] || it.title.ar;
+    const desc = (typeof it.desc=== string )? it.desc : it.desc[window.lang] || it.desc.ar;
+    el.innerHTML = `<div class="icon">${it.icon ||  📄 }</div><h3>${title}</h3><p>${desc}</p>`;
+    el.onclick = ()=>{ if(it.url) openUrl(it.url); else openSection(it.id); };
+    grid.appendChild(el);
+  });
+}
+
+/* OPEN SECTIONS */
+function openUrl(u){ window.open(u, _blank ) }
+function openSection(name){
+  const title = (window.lang=== ar )? sectionTitleArabic(name) : sectionTitleEnglish(name);
+  const body = getSectionHtml(name);
+  $( pageTitle ).innerText = title;
+  $( pageBody ).innerHTML = body;
+  showModal( page );
+}
+function sectionTitleArabic(key){
+  if(key=== books ) return  الكتب والروايات ;
+  if(key=== fun ) return  الترفيه ;
+  if(key=== teachers ) return  قسم المعلمين ;
+  if(key=== smart ) return  التعليم الذكي ;
+  if(key=== qna ) return  أسئلة وتمارين ;
+  return  القسم ;
+}
+function sectionTitleEnglish(key){
+  if(key=== books ) return  Books & Novels ;
+  if(key=== fun ) return  Fun Corner ;
+  if(key=== teachers ) return  Teachers ;
+  if(key=== smart ) return  Smart Education ;
+  if(key=== qna ) return  Questions & Exercises ;
+  return  Section ;
+}
+function getSectionHtml(name){
+  if(name=== books ){
+    return `<div>
+      <p>${window.lang=== ar ? مصادر موثوقة للكتب والروايات (افتح لتحميل/قراءة): : Trusted book sources (open to read/download): }</p>
+      <ul>
+        <li><a href="${LINKS.archive}" target="_blank">Internet Archive</a></li>
+        <li><a href="${LINKS.gutenberg}" target="_blank">Project Gutenberg</a></li>
+        <li><a href="${LINKS.gutenberg_ar}" target="_blank">Gutenberg - Arabic</a></li>
+        <li><a href="${LINKS.googlebooks}" target="_blank">Google Books</a></li>
+      </ul>
+      <p class="small">${window.lang=== ar ? يمكنك إضافة روابط خاصة عبر لوحة المطور : You can add private links via Developer Zone }</p>
+    </div>`;
+  }
+  if(name=== fun ){
+    return `<div><h3>${window.lang=== ar ? نكت وتسالي : Jokes & Fun }</h3>
+      <ul>
+        <li>نكتة: المدرس قال للطالب... (مثال)</li>
+        <li>تحدي ذهني: ما هو الشيء الذي يمشي بلا قدمين؟</li>
+      </ul>
+      <h3>${window.lang=== ar ? قصص نجاح : Success Stories }</h3>
+      <p>${window.lang=== ar ? قصة: طالب تغلب على الصعوبات ونجح بالمثابرة.  :  A student overcame challenges and succeeded through persistence. }</p>
+    </div>`;
+  }
+  if(name=== teachers ){
+    return `<div>
+      <h3>${window.lang=== ar ? تحضير الدروس وخطط : Lesson Prep & Plans }</h3>
+      <p>${window.lang=== ar ? قوالب جاهزة لتحضير الدروس وخطط أسبوعية وأنشطة.  :  Templates for prep, weekly plans and activities. }</p>
+    </div>`;
+  }
+  if(name=== smart ){
+    return `<div>
+      <h3>${window.lang=== ar ? التعليم الذكي - EduBot : Smart Education - EduBot }</h3>
+      <p>${window.lang=== ar ? اسأل المدرس الذكي: أكتب سؤالك وسيتم إعطاء ملخص أو توجيه.  :  Ask the EduBot: type a question to get a summary or guidance. }</p>
+      <div style="margin-top:8px">
+        <input id="eduQuery" placeholder="${window.lang=== ar ? اكتب سؤالك هنا... : Type your question... }"/>
+        <div style="margin-top:8px"><button class="btn" onclick="eduAnswer()">اسأل المدرس الذكي</button></div>
+        <div id="eduAnswer" style="margin-top:12px"></div>
+      </div>
+    </div>`;
+  }
+  if(name=== qna ){
+    return `<div><p>${window.lang=== ar ? مجموعة أسئلة وتمارين قريبة الإضافة.  :  Questions & exercises coming soon. }</p></div>`;
+  }
+  return `<div><p>${window.lang=== ar ? المحتوى قيد الإعداد.  :  Content is being prepared. }</p></div>`;
+}
+
+/* EDUBOT - simple summarizer (local keyword split) */
+function eduAnswer(){
+  const q = $( eduQuery ).value.trim();
+  if(!q){ alertMsg(window.lang=== ar ? اكتب السؤال : Type the question ); return }
+  // simple heuristic summary emulation
+  let ans =  أعد صياغة السؤال لتلخيصه أو ضع كلمات مفتاحية. ;
+  if(q.length>40) ans = q.split( . ).slice(0,2).join( .  ) + (q.includes( . )? . :  );
+  else ans =  نقطة رئيسية:   + q +  . نصيحة: قم بتقسيم المادة إلى نقاط قصيرة. ;
+  $( eduAnswer ).innerText = ans;
+}
+
+/* DEVELOPER ZONE */
+function devLogin(){
+  const p = $( devPass ).value.trim();
+  if(p===DEV_PASS){ $( devTools ).classList.remove( hidden ); $( devPass ).value=  ; renderDevList(); alertMsg( تم الدخول كمطور ); }
+  else alertMsg( كلمة مرور خاطئة );
+}
+function logoutDev(){ $( devTools ).classList.add( hidden ); alertMsg( تم تسجيل الخروج ); }
+function addDevItem(){
+  const title = $( newTitle ).value.trim(); const url = $( newLink ).value.trim();
+  if(!title || !url){ alertMsg( أكمل الحقول ); return }
+  const item = {id: dev_ +Date.now(), title:{ar:title,en:title}, desc:{ar: محتوى مضاف من المطور ,en: Developer added }, icon: 📄 , url};
+  devAdded.unshift(item); localStorage.setItem( ka_dev_added_v1 , JSON.stringify(devAdded));
+  $( newTitle ).value=  ; $( newLink ).value=  ;
+  renderDevList(); renderStudents(); alertMsg( تمت الإضافة );
+}
+function renderDevList(){
+  const dv = $( devList ); dv.innerHTML=  ;
+  if(devAdded.length===0){ dv.innerHTML = `<small class="small">${window.lang=== ar ? لا توجد عناصر : No items }</small>`; return }
+  devAdded.forEach(it=>{
+    const d = document.createElement( div ); d.style.padding= 8px ; d.style.borderBottom= 1px solid #eee ;
+    d.innerHTML = `<strong>${it.title.ar}</strong><div style="font-size:12px;color:#444">${it.url}</div><div style="margin-top:6px"><button class="btn" onclick="removeDevItem( ${it.id} )">حذف</button></div>`;
+    dv.appendChild(d);
+  });
+}
+function removeDevItem(id){ devAdded = devAdded.filter(i=>i.id!==id); localStorage.setItem( ka_dev_added_v1 , JSON.stringify(devAdded)); renderDevList(); renderStudents(); }
+
+/* RATING */
+function renderRating(){
+  const saved = JSON.parse(localStorage.getItem( ka_rating_v1 )|| {"count":0,"sum":0} );
+  const avg = saved.count? Math.round((saved.sum/saved.count)) : 5;
+  const stars =  ★★★★★ .slice(0,avg) +  ☆☆☆☆☆ .slice(0,5-avg);
+  $( rating ).innerText = stars;
+  $( rating ).onclick = ()=>{ const r = prompt(window.lang=== ar ? قيّم التطبيق من 1 إلى 5 : Rate 1-5 ); const n = parseInt(r); if(n>=1 && n<=5){ saved.count++; saved.sum+=n; localStorage.setItem( ka_rating_v1 , JSON.stringify(saved)); alertMsg(window.lang=== ar ? شكراً لتقييمك : Thanks for rating ); renderRating(); } else alertMsg(window.lang=== ar ? قيمة خاطئة : Invalid value ) }
+}
+
+/* BOOT & HELPERS */
+function goHome(){ $( modal-auth ).style.display= none ; $( modal-page ).style.display= none ; $( splash ).style.display= none ; $( ui ).classList.remove( hidden ); $( sectionTitle ).innerText = (window.lang=== ar ) ?  قسم الطلاب  :  Students ; renderAll(); }
+function showPage(title, html){ $( pageTitle ).innerText=title; $( pageBody ).innerHTML=html; showModal( page ) }
+
+window.addEventListener( load , ()=>{ renderAll(); if(getCurrent()){ goHome(); } else { $( splash ).style.display= block ; $( ui ).classList.add( hidden ); } });
+</script>
+</body>
+  </html>
+          
